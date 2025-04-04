@@ -1,5 +1,5 @@
 # full-stack-aws-app-new
 Task Tracker Project
-Team: Holly Yuan
+Team: Holly Yuan, Role: Trainer
 Team: John
 Team: Jane
