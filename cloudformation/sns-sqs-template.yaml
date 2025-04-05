@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  TaskTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: TaskNotificationTopic
+  TaskQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: TaskQueue
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref TaskQueue
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action: sqs:SendMessage
+            Resource: !GetAtt TaskQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref TaskTopic
+  SNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      TopicArn: !Ref TaskTopic
+      Endpoint: !GetAtt TaskQueue.Arn
+Outputs:
+  TopicArn:
+    Value: !Ref TaskTopic
+  QueueArn:
+    Value: !GetAtt TaskQueue.Arn
+  QueueUrl:
+    Value: !Ref TaskQueue

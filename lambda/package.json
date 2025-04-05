@@ -1,0 +1,9 @@
+{
+              "name": "task-tracker-lambda",
+              "version": "1.0.0",
+              "description": "Lambda functions for Task Tracker app",
+              "main": "hello-world.js",
+              "dependencies": {
+                "aws-sdk": "^2.1410.0"
+              }
+            }
