@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  LambdaCodeBucket:
+    Type: String
+    Default: task-tracker-bucket-holly-1743805064  # Replace with your bucket name
+Resources:
+  TaskLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: TaskTrackerCreateTask-holly
+      Handler: hello-world.handler
+      Role: !GetAtt TaskLambdaRole.Arn
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: lambda-code-v2.zip
+      Runtime: nodejs18.x
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: arn:aws:sns:us-east-1:605203259214:TaskMessagingStack-TaskTopic-L11ruwzrtkZ6 # Replace with your TopicArn
+  TaskLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: SNSPublishPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: sns:Publish
+                Resource: arn:aws:sns:us-east-1:605203259214:TaskMessagingStack-TaskTopic-L11ruwzrtkZ6  # Replace with your TopicArn
